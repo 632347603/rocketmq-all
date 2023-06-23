@@ -16,7 +16,6 @@
  */
 package org.apache.rocketmq.example.simple;
 
-import java.util.List;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -26,10 +25,13 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
 
-public class PushConsumer {
+import java.util.List;
+
+public class PushConsumer2 {
 
     public static void main(String[] args) throws InterruptedException, MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("CID_JODIE_2");
+        consumer.setInstanceName("ddddTestliumin");
 //        consumer.subscribe("TopicLiuminTest", "*");
 //        consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
 //        //wrong time format 2017_0422_221800
@@ -43,20 +45,24 @@ public class PushConsumer {
 //            }
 //        });
 //        consumer.start();
-//        System.out.printf("Consumer Started.%n");
+        System.out.printf("Consumer Started.%n");
 
-
+        consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueAveragelyByCircle());
         consumer.subscribe("ATopicDmb2", "*");
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        consumer.setAllocateMessageQueueStrategy(new AllocateMessageQueueAveragelyByCircle());
         //wrong time format 2017_0422_221800
         consumer.setConsumeTimestamp("20181109221800");
+        consumer.setMaxReconsumeTimes(2);
         consumer.registerMessageListener(new MessageListenerConcurrently() {
-
             @Override
-            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+            public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context)  {
                 System.out.printf("%s Receive New Messages: %s %n", Thread.currentThread().getName(), msgs);
-                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                boolean flag=true;
+                if(flag){
+                    return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                }else{
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
             }
         });
         consumer.start();

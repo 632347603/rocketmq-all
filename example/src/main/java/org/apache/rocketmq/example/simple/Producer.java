@@ -28,13 +28,29 @@ public class Producer {
         DefaultMQProducer producer = new DefaultMQProducer("ProducerGroupName");
         producer.start();
 
-        for (int i = 0; i < 128; i++)
+//        for (int i = 0; i < 10; i++)
+//            try {
+//                {
+//                    Message msg = new Message("TopicLiuminTest",
+//                        "TagA",
+//                        "OrderID188",
+//                        "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+//                    SendResult sendResult = producer.send(msg);
+//                    System.out.printf("%s%n", sendResult);
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//         }
+
+
+        for (int i = 0; i < 2; i++)
             try {
                 {
-                    Message msg = new Message("TopicTest",
-                        "TagA",
-                        "OrderID188",
-                        "Hello world".getBytes(RemotingHelper.DEFAULT_CHARSET));
+                    Message msg = new Message("ATopicDmb2",
+                            "TagB",
+                            "OrderID188B",
+                            "你好".getBytes(RemotingHelper.DEFAULT_CHARSET));
                     SendResult sendResult = producer.send(msg);
                     System.out.printf("%s%n", sendResult);
                 }
